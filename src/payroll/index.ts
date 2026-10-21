@@ -30,3 +30,4 @@ export * from "./compensationPolicyDependencyMapping";
 export * from "./contractPauseGuard";
 export * from "./concurrentPayrollEditWarning";
 export * from "./employeeReinstatementPayrollReview";
+export * from "./payrollGroupEffectiveDateValidation";
