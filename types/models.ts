@@ -1264,3 +1264,39 @@ export interface UploadCheckpointQueryResult {
    */
   ageSeconds: number | null;
 }
+
+// ─── Payroll Draft Provenance ─────────────────────────────────────────────────
+
+/**
+ * The kind of change that produced a draft provenance entry.
+ *
+ * `created` is recorded once when a draft is first saved; `updated` is
+ * recorded on every subsequent mutation so operators can trace a draft's
+ * chain of custody back to its origin.
+ */
+export type DraftProvenanceAction = "created" | "updated";
+
+/**
+ * One link in a payroll draft's chain of custody.
+ *
+ * Provenance records *who* touched a draft and *when*, plus a one-way content
+ * digest so any change to the draft's contents is detectable. It never
+ * reversibly stores salary amounts, employee IDs, wallet addresses, or ZK
+ * commitments — only structural metadata and the digest are retained.
+ */
+export interface DraftProvenanceEntry {
+  /** What happened: the draft was created or updated. */
+  action: DraftProvenanceAction;
+  /** Identity of the actor who made the change; defaults to "system" when omitted. */
+  actor: string;
+  /** ISO-8601 timestamp when the change was recorded. */
+  timestamp: string;
+  /**
+   * Privacy-safe content digest of the draft at change time.
+   * One-way hash of structural fields only — used to detect that the draft's
+   * contents changed between revisions. Never reversible to payroll data.
+   */
+  contentChecksum: string;
+  /** Human-readable summary of what changed; contains no personal data. */
+  changeSummary?: string;
+}
